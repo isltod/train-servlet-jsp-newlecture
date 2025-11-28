@@ -1,7 +1,5 @@
-<%@page import="com.newlecture.web.entity.Notice"%>
-<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -10,19 +8,20 @@
 <html>
 
 <head>
-<title>코딩 전문가를 만들기 위한 온라인 강의 시스템</title>
-<meta charset="UTF-8">
-<title>공지사항목록</title>
+	<title>코딩 전문가를 만들기 위한 온라인 강의 시스템</title>
+	<meta charset="UTF-8">
+	<title>공지사항목록</title>
 
-<link href="/css/customer/layout.css" type="text/css" rel="stylesheet" />
-<style>
-#visual .content-container {
-	height: inherit;
-	display: flex;
-	align-items: center;
-	background: url("../../images/customer/visual.png") no-repeat center;
-}
-</style>
+	<link href="/css/customer/layout.css" type="text/css" rel="stylesheet" />
+	<style>
+		#visual .content-container {
+			height: inherit;
+			display: flex;
+			align-items: center;
+
+			background: url("/images/mypage/visual.png") no-repeat center;
+		}
+	</style>
 </head>
 
 <body>
@@ -34,7 +33,8 @@
 			<!-- ---------------------------<header>--------------------------------------- -->
 
 			<h1 id="logo">
-				<a href="/index.html"> <img src="/images/logo.png" alt="뉴렉처 온라인" />
+				<a href="/index.html">
+					<img src="/images/logo.png" alt="뉴렉처 온라인" />
 
 				</a>
 			</h1>
@@ -59,8 +59,9 @@
 						<form action="/course">
 							<fieldset>
 								<legend>과정검색필드</legend>
-								<label>과정검색</label> <input type="text" name="q" value="" /> <input
-									type="submit" value="검색" />
+								<label>과정검색</label>
+								<input type="text" name="q" value="" />
+								<input type="submit" value="검색" />
 							</fieldset>
 						</form>
 					</section>
@@ -77,10 +78,8 @@
 					<nav id="member-menu" class="linear-layout">
 						<h1 class="hidden">고객메뉴</h1>
 						<ul class="linear-layout">
-							<li><a href="/member/home"><img
-									src="/images/txt-mypage.png" alt="마이페이지" /></a></li>
-							<li><a href="/notice/list.html"><img
-									src="/images/txt-customer.png" alt="고객센터" /></a></li>
+							<li><a href="/member/home"><img src="/images/txt-mypage.png" alt="마이페이지" /></a></li>
+							<li><a href="/notice/list.html"><img src="/images/txt-customer.png" alt="고객센터" /></a></li>
 						</ul>
 					</nav>
 
@@ -106,28 +105,21 @@
 
 
 			<aside class="aside">
-				<h1>고객센터</h1>
+				<h1>ADMIN PAGE</h1>
 
 				<nav class="menu text-menu first margin-top">
-					<h1>고객센터메뉴</h1>
+					<h1>마이페이지</h1>
 					<ul>
-						<li><a class="current" href="/customer/notice">공지사항</a></li>
-						<li><a class="" href="/customer/faq">자주하는 질문</a></li>
-						<li><a class="" href="/customer/question">수강문의</a></li>
-						<li><a class="" href="/customer/event">이벤트</a></li>
-
+						<li><a href="/admin/index.html">관리자홈</a></li>
+						<li><a href="/teacher/index.html">선생님페이지</a></li>
+						<li><a href="/student/index.html">수강생페이지</a></li>
 					</ul>
 				</nav>
 
-
-				<nav class="menu">
-					<h1>협력업체</h1>
+				<nav class="menu text-menu">
+					<h1>알림관리</h1>
 					<ul>
-						<li><a target="_blank" href="http://www.notepubs.com"><img
-								src="/images/notepubs.png" alt="노트펍스" /></a></li>
-						<li><a target="_blank" href="http://www.namoolab.com"><img
-								src="/images/namoolab.png" alt="나무랩연구소" /></a></li>
-
+						<li><a href="/admin/board/notice/list.html">공지사항</a></li>
 					</ul>
 				</nav>
 
@@ -153,55 +145,66 @@
 					<form class="table-form">
 						<fieldset>
 							<legend class="hidden">공지사항 검색 필드</legend>
-							<label class="hidden">검색분류</label> <select name="f">
-								<option ${(param.f == "title") ? "selected" : ""} value="title">제목</option>
-								<option ${(param.f == "writer_id") ? "selected" : ""}
-									value="writer_id">작성자</option>
-							</select> <label class="hidden">검색어</label> <input type="text" name="q"
-								value="${param.q}" /> <input class="btn btn-search"
-								type="submit" value="검색" />
+							<label class="hidden">검색분류</label>
+							<select name="f">
+								<option value="title">제목</option>
+								<option value="writerId">작성자</option>
+							</select>
+							<label class="hidden">검색어</label>
+							<input type="text" name="q" value="" />
+							<input class="btn btn-search" type="submit" value="검색" />
 						</fieldset>
 					</form>
 				</div>
-
-				<div class="notice margin-top">
-					<h3 class="hidden">공지사항 목록</h3>
-					<table class="table">
-						<thead>
-							<tr>
-								<th class="w60">번호</th>
-								<th class="expand">제목</th>
-								<th class="w100">작성자</th>
-								<th class="w100">작성일</th>
-								<th class="w60">조회수</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach var="n" items="${notices}">
+				<form action="list" method="post">
+					<div class="notice margin-top">
+						<h3 class="hidden">공지사항 목록</h3>
+						<table class="table">
+							<thead>
 								<tr>
-									<td>${n.id}</td>
-									<td class="title indent text-align-left"><a
-										href="detail?id=${n.id}">${n.title}</a><span>${(n.cmtCount > 0) ? " [" += n.cmtCount += "]" : ""}</span></td>
-									<td>${n.writer_id}</td>
-									<td><fmt:formatDate pattern="yyyy.MM.dd"
-											value="${n.regDate}" /></td>
-									<td><fmt:formatNumber value="${n.hit}" /></td>
+									<th class="w60">번호</th>
+									<th class="expand">제목</th>
+									<th class="w100">작성자</th>
+									<th class="w100">작성일</th>
+									<th class="w60">조회수</th>
+									<th class="w40">공개</th>
+									<th class="w40">삭제</th>
 								</tr>
-							</c:forEach>
-						</tbody>
-					</table>
-				</div>
-
-				<c:set var="reqPage" value="${(empty param.p) ? 1 : param.p}" />
-				<c:set var="startNum" value="${reqPage - (reqPage - 1) % 5}" />
-				<c:set var="lastNum" value="${fn:substringBefore(Math.ceil(count / 3), '.')}" />
-				
-				<div class="indexer margin-top align-right">
-					<h3 class="hidden">현재 페이지</h3>
-					<div>
-						<span class="text-orange text-strong">${reqPage}</span> / ${lastNum} pages
+							</thead>
+							<tbody>
+								<c:forEach var="n" items="${notices}">
+									<tr>
+										<td>${n.id}</td>
+										<td class="title indent text-align-left"><a
+											href="detail?id=${n.id}">${n.title}</a><span>${(n.cmtCount > 0) ? " [" += n.cmtCount += "]" : ""}</span></td>
+										<td>${n.writer_id}</td>
+										<td><fmt:formatDate pattern="yyyy.MM.dd"
+												value="${n.regDate}" /></td>
+										<td><fmt:formatNumber value="${n.hit}" /></td>
+										<td><input type="checkbox" name="open-id" value="${n.id}" ></td>
+										<td><input type="checkbox" name="del-id" value="${n.id}" ></td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
 					</div>
-				</div>
+					<c:set var="reqPage" value="${(empty param.p) ? 1 : param.p}" />
+					<c:set var="startNum" value="${reqPage - (reqPage - 1) % 5}" />
+					<c:set var="lastNum" value="${fn:substringBefore(Math.ceil(count / 3), '.')}" />
+					
+					<div class="indexer margin-top align-right">
+						<h3 class="hidden">현재 페이지</h3>
+						<div>
+							<span class="text-orange text-strong">${reqPage}</span> / ${lastNum} pages
+						</div>
+					</div>
+	
+					<div class="text-align-right margin-top">
+						<input type="submit" class="btn-text btn-default" name="cmd" value="일괄공개">
+						<input type="submit" class="btn-text btn-default" name="cmd" value="일괄삭제">
+						<a class="btn-text btn-default" href="reg">글쓰기</a>				
+					</div>
+				</form>
 
 				<div class="margin-top align-center pager">
 					<div>
@@ -245,14 +248,12 @@
 
 	<footer id="footer">
 		<div class="content-container">
-			<h2 id="footer-logo">
-				<img src="/images/logo-footer.png" alt="회사정보">
-			</h2>
+			<h2 id="footer-logo"><img src="/images/logo-footer.png" alt="회사정보"></h2>
 
 			<div id="company-info">
 				<dl>
 					<dt>주소:</dt>
-					<dd>서울특별시</dd>
+					<dd>서울특별시 </dd>
 					<dt>관리자메일:</dt>
 					<dd>admin@newlecture.com</dd>
 				</dl>
@@ -270,9 +271,8 @@
 					<dt>전화번호:</dt>
 					<dd>111-1111-1111</dd>
 				</dl>
-				<div id="copyright" class="margin-top">Copyright ⓒ
-					newlecture.com 2012-2014 All Right Reserved. Contact
-					admin@newlecture.com for more information</div>
+				<div id="copyright" class="margin-top">Copyright ⓒ newlecture.com 2012-2014 All Right Reserved.
+					Contact admin@newlecture.com for more information</div>
 			</div>
 		</div>
 	</footer>
