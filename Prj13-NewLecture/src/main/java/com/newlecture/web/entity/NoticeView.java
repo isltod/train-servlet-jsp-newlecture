@@ -5,8 +5,8 @@ import java.util.Date;
 public class NoticeView extends Notice {
 	private int cmtCount;
 
-	public NoticeView(int id, String title, Date regDate, String writer_id, int hit, String files, int cmtCount) {
-		super(id, title, regDate, writer_id, hit, files, "");
+	public NoticeView(int id, String title, Date regDate, String writer_id, int hit, String files, boolean pub, int cmtCount) {
+		super(id, title, regDate, writer_id, hit, files, "", pub);
 		this.cmtCount = cmtCount;
 	}
 

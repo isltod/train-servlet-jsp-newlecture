@@ -1,4 +1,4 @@
-package com.newlecture.web.controller;
+package com.newlecture.web.controller.notice;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/notice/list")
-public class NoticeListController extends HttpServlet {
+public class ListController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String field = "title";
@@ -28,7 +28,7 @@ public class NoticeListController extends HttpServlet {
 		if (page_ != null && !page_.equals("")) page = Integer.parseInt(page_);
 		
 		NoticeService service = new NoticeService();
-		List<NoticeView> notices = service.getNoticeList(field, query, page);
+		List<NoticeView> notices = service.getNoticeViewList(field, query, page);
 		int count = service.getNoticeCount(field, query);
 		
 		req.setAttribute("notices", notices);

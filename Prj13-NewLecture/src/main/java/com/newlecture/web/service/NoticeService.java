@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,15 +14,58 @@ import com.newlecture.web.entity.Notice;
 import com.newlecture.web.entity.NoticeView;
 
 public class NoticeService {
-	public List<NoticeView> getNoticeList() {
-		return getNoticeList("title", "", 1);
+	
+	public int removeNoticeAll() {
+		return 0;
 	}
 	
-	public List<NoticeView> getNoticeList(int page) {
-		return getNoticeList("title", "", page);
+	public int pubNoticeAll(String[] openIds) {
+		return 0;
 	}
 	
-	public List<NoticeView> getNoticeList(String field, String query, int page) {
+	public int insertNotice(Notice notice) {
+		String sql = "INSERT INTO notice(title, content, writer_id, pub) VALUES (?, ?, ?, ?)";
+		String url = "jdbc:oracle:thin:@localhost:1521/orcl";
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection connection = DriverManager.getConnection(url, "newlec", "1111");
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, notice.getTitle());
+			statement.setString(2, notice.getContent());
+			statement.setString(3, notice.getWriter_id());
+			statement.setBoolean(4, notice.getPub());
+			int result = statement.executeUpdate();
+
+			statement.close();
+			connection.close();
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public int deleteNotice(int id) {
+		return 0;
+	}
+	
+	public int updateNotice(Notice notice) {
+		return 0;
+	}
+	
+	public List<Notice> getNoticeNewestList() {
+		return null;
+	}
+	
+	public List<NoticeView> getNoticeViewList() {
+		return getNoticeViewList("title", "", 1);
+	}
+	
+	public List<NoticeView> getNoticeViewList(int page) {
+		return getNoticeViewList("title", "", page);
+	}
+	
+	public List<NoticeView> getNoticeViewList(String field, String query, int page) {
 		List<NoticeView> notices = new ArrayList<>();
 		String sql = "SELECT * FROM ( "
 				+ "    SELECT RowNum Num, n.*  "
@@ -46,8 +90,9 @@ public class NoticeService {
 				int hit = rs.getInt("HIT");
 				String files = rs.getString("FILES");
 				int cmtCount = rs.getInt("CMT_COUNT");
+				boolean pub = rs.getBoolean("PUB");
 				
-				NoticeView notice = new NoticeView(id, title, regDate, writer_id, hit, files, cmtCount);
+				NoticeView notice = new NoticeView(id, title, regDate, writer_id, hit, files, pub, cmtCount);
 				notices.add(notice);
 			}
 
@@ -106,7 +151,8 @@ public class NoticeService {
 				int hit = rs.getInt("hit");
 				String files = rs.getString("files");
 				String content = rs.getString("content");
-				notice = new Notice(getId, title, regDate, writer_id, hit, files, content);
+				boolean pub = rs.getBoolean("pub");
+				notice = new Notice(getId, title, regDate, writer_id, hit, files, content, pub);
 			}
 			rs.close();
 			statement.close();
@@ -141,7 +187,8 @@ public class NoticeService {
 				int hit = rs.getInt("hit");
 				String files = rs.getString("files");
 				String content = rs.getString("content");
-				notice = new Notice(getId, title, regDate, writer_id, hit, files, content);
+				boolean pub = rs.getBoolean("pub");
+				notice = new Notice(getId, title, regDate, writer_id, hit, files, content, pub);
 			}
 			rs.close();
 			statement.close();
@@ -176,7 +223,8 @@ public class NoticeService {
 				int hit = rs.getInt("hit");
 				String files = rs.getString("files");
 				String content = rs.getString("content");
-				notice = new Notice(getId, title, regDate, writer_id, hit, files, content);
+				boolean pub = rs.getBoolean("pub");
+				notice = new Notice(getId, title, regDate, writer_id, hit, files, content, pub);
 			}
 			rs.close();
 			statement.close();
@@ -186,5 +234,28 @@ public class NoticeService {
 			e.printStackTrace();
 		}
 		return notice;
+	}
+
+	public int deleteNoticeAll(String[] delIds) {
+		String params = "";
+		for (int i = 0; i < delIds.length; i++) {
+			params += delIds[i];
+			if (i < delIds.length - 1) params += ", ";
+		}
+		String sql = "DELETE notice WHERE id IN (" + params + ")";
+		String url = "jdbc:oracle:thin:@localhost:1521/orcl";
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection connection = DriverManager.getConnection(url, "newlec", "1111");
+			Statement statement = connection.createStatement();
+			int result = statement.executeUpdate(sql);
+
+			statement.close();
+			connection.close();
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 }
