@@ -24,7 +24,7 @@ public class NoticeService {
 	}
 	
 	public int insertNotice(Notice notice) {
-		String sql = "INSERT INTO notice(title, content, writer_id, pub) VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO notice(title, content, writer_id, pub, files) VALUES (?, ?, ?, ?, ?)";
 		String url = "jdbc:oracle:thin:@localhost:1521/orcl";
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -34,6 +34,7 @@ public class NoticeService {
 			statement.setString(2, notice.getContent());
 			statement.setString(3, notice.getWriter_id());
 			statement.setBoolean(4, notice.getPub());
+			statement.setString(5,  notice.getFiles());
 			int result = statement.executeUpdate();
 
 			statement.close();
