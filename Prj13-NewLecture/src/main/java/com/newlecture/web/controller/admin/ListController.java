@@ -1,6 +1,8 @@
 package com.newlecture.web.controller.admin;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.newlecture.web.entity.NoticeView;
@@ -25,9 +27,20 @@ public class ListController extends HttpServlet {
 		int result = 0;
 		switch (cmd) {
 		case "일괄공개":
-			result = service.pubNoticeAll(openIds);
+			String origIds_ = req.getParameter("origIds");
+			String[] origIds = origIds_.trim().split(" ");
+			List<String> closeIds = new ArrayList<String>(Arrays.asList(origIds));
+			List<String> pubIds = new ArrayList<String>();
+			if (openIds != null) {
+				pubIds = Arrays.asList(openIds);
+				closeIds.removeAll(pubIds);
+			}
+			
+			result = service.pubNoticeAll(pubIds, closeIds);
+			break;
 		case "일괄삭제":
 			result = service.deleteNoticeAll(delIds);
+			break;
 		}
 		
 		resp.sendRedirect("list");
