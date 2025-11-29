@@ -19,8 +19,39 @@ public class NoticeService {
 		return 0;
 	}
 	
-	public int pubNoticeAll(String[] openIds) {
-		return 0;
+	public int pubNoticeAll(List<String> pubIds, List<String> closeIds) {
+		String pubIdsCSV = String.join(",", pubIds);
+		String closeIdsCSV = String.join(",", closeIds);
+		return pubNoticeAll(pubIdsCSV, closeIdsCSV);
+	}
+
+	public int pubNoticeAll(String pubIdsCSV, String closeIdsCSV) {
+		int result = 0;
+		List<String> sqls = new ArrayList<String>();
+		if (pubIdsCSV != null && !pubIdsCSV.equals("")) {
+			String sqlPub = "UPDATE notice SET pub=1 WHERE id IN (" + pubIdsCSV + ")";
+			sqls.add(sqlPub);
+		}
+		if (closeIdsCSV != null && !closeIdsCSV.equals("")) {
+			String sqlClose = "UPDATE notice SET pub=0 WHERE id IN (" + closeIdsCSV + ")";
+			sqls.add(sqlClose);
+		}
+		String url = "jdbc:oracle:thin:@localhost:1521/orcl";
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection connection = DriverManager.getConnection(url, "newlec", "1111");
+			Statement statement = connection.createStatement();
+			for (String sql : sqls) {
+				result += statement.executeUpdate(sql);
+			}
+
+			statement.close();
+			connection.close();
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	public int insertNotice(Notice notice) {
@@ -66,6 +97,46 @@ public class NoticeService {
 		return getNoticeViewList("title", "", page);
 	}
 	
+	public List<NoticeView> getNoticeViewPubList(String field, String query, int page) {
+		List<NoticeView> notices = new ArrayList<>();
+		String sql = "SELECT * FROM ( "
+				+ "    SELECT RowNum Num, n.*  "
+				+ "    FROM (SELECT * FROM notice_view WHERE pub=1 AND " + field + " LIKE ? ORDER BY regdate DESC) n  "
+				+ ") "
+				+ "WHERE Num BETWEEN ? AND ?";
+		String url = "jdbc:oracle:thin:@localhost:1521/orcl";
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection connection = DriverManager.getConnection(url, "newlec", "1111");
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, "%" + query + "%");
+			statement.setInt(2, 1 + (page - 1) * 3);
+			statement.setInt(3, page * 3);
+			ResultSet rs = statement.executeQuery();
+
+			while (rs.next()) {
+				int id = rs.getInt("ID");
+				String title = rs.getString("TITLE");
+				Date regDate = rs.getDate("REGDATE");
+				String writer_id = rs.getString("WRITER_ID");
+				int hit = rs.getInt("HIT");
+				String files = rs.getString("FILES");
+				int cmtCount = rs.getInt("CMT_COUNT");
+				boolean pub = rs.getBoolean("PUB");
+				
+				NoticeView notice = new NoticeView(id, title, regDate, writer_id, hit, files, pub, cmtCount);
+				notices.add(notice);
+			}
+
+			rs.close();
+			statement.close();
+			connection.close();
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return notices;
+	}
 	public List<NoticeView> getNoticeViewList(String field, String query, int page) {
 		List<NoticeView> notices = new ArrayList<>();
 		String sql = "SELECT * FROM ( "
@@ -107,6 +178,28 @@ public class NoticeService {
 		return notices;
 	}
 	
+	public int getNoticePubCount(String field, String query) {
+		int count = 0;
+		String sql = "SELECT COUNT(id) COUNT FROM notice WHERE pub=1 AND " + field + " LIKE ?";
+		String url = "jdbc:oracle:thin:@localhost:1521/orcl";
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection connection = DriverManager.getConnection(url, "newlec", "1111");
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, "%" + query + "%");
+			ResultSet rs = statement.executeQuery();
+
+			if (rs.next()) count = rs.getInt("count");
+			rs.close();
+			statement.close();
+			connection.close();
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return count;
+	}
+
 	public int getNoticeCount() {
 		return getNoticeCount("title", "");
 	}
@@ -259,4 +352,5 @@ public class NoticeService {
 		}
 		return 0;
 	}
+
 }

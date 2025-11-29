@@ -28,8 +28,8 @@ public class ListController extends HttpServlet {
 		if (page_ != null && !page_.equals("")) page = Integer.parseInt(page_);
 		
 		NoticeService service = new NoticeService();
-		List<NoticeView> notices = service.getNoticeViewList(field, query, page);
-		int count = service.getNoticeCount(field, query);
+		List<NoticeView> notices = service.getNoticeViewPubList(field, query, page);
+		int count = service.getNoticePubCount(field, query);
 		
 		req.setAttribute("notices", notices);
 		req.setAttribute("count", count);
